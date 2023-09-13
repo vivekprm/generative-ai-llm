@@ -1,4 +1,4 @@
-# generative-ai-llm
+# Generative AI & llm
 
 ## Introduction
 Generative AI and LLMs specifically are a general purpose technology. That means that similar to other general purpose technologies like deep learning and electricity, is useful not just for a single application, but for a lot of different applications that span many corners of the economy. 
@@ -149,3 +149,109 @@ The output of this layer is a vector of logits proportional to the probability s
 ![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/1d44d1c0-01c5-4acd-a988-cfdeb1bafbe1)
 
 This output includes a probability for every single word in the vocabulary, so there's likely to be thousands of scores here. One single token will have a score higher than the rest. This is the most likely predicted token. 
+
+# Generating text with transformers
+Let's walk through a simple example. In this example, you'll look at a translation task or a sequence-to-sequence task, which incidentally was the original objective of the transformer architecture designers.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/ac26a685-7ddf-4460-8a15-7b84d5e17cd8)
+
+You'll use a transformer model to translate the French phrase [FOREIGN] into English. First, you'll tokenize the input words using this same tokenizer that was used to train the network. These tokens are then added into the input on the encoder side of the network, passed through the embedding layer, and then fed into the multi-headed attention layers. The outputs of the multi-headed attention layers are fed through a feed-forward network to the output of the encoder. At this point, the data that leaves the encoder is a deep representation of the structure and meaning of the input sequence. This representation is inserted into the middle of the decoder to influence the decoder's self-attention mechanisms. Next, a start of sequence token is added to the input of the decoder. This triggers the decoder to predict the next token, which it does based on the contextual understanding that it's being provided from the encoder. The output of the decoder's self-attention layers gets passed through the decoder feed-forward network and through a final softmax output layer. At this point, we have our first token. You'll continue this loop, passing the output token back to the input to trigger the generation of the next token, until the model predicts an end-of-sequence token. At this point, the final sequence of tokens can be detokenized into words, and you have your output. In this case, I love machine learning. 
+
+
+There are multiple ways in which you can use the output from the softmax layer to predict the next token. These can influence how creative you are generated text is.
+
+While the translation example you explored here used both the encoder and decoder parts of the transformer, you can split these components apart for variations of the architecture. **Encoder-only models** also work as sequence-to-sequence models, but without further modification, the input sequence and the output sequence or the same length. Their use is less common these days, but by adding additional layers to the architecture, you can train encoder-only models to perform classification tasks such as sentiment analysis, **BERT is an example of an encoder-only model**. 
+
+Encoder-decoder models, as you've seen, perform well on sequence-to-sequence tasks such as translation, where the input sequence and the output sequence can be different lengths. You can also scale and train this type of model to perform general text generation tasks. **Examples of encoder-decoder models include BART as opposed to BERT and T5**.
+
+Finally, decoder-only models are some of the most commonly used today. Again, as they have scaled, their capabilities have grown. These models can now generalize to most tasks. Popular decoder-only models include the GPT family of models, BLOOM, Jurassic, LLaMA, and many more. 
+
+You can read the Transformers paper [here](https://arxiv.org/abs/1706.03762).
+
+# Prompting & Prompt Engineering
+Just to remind you of some of the terminology.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/a6131aac-20be-4d48-ab72-0fd36200a9fa)
+
+The text that you feed into the model is called the prompt, the act of generating text is known as inference, and the output text is known as the completion. The full amount of text or the memory that is available to use for the prompt is called the context window.
+
+Although the example here shows the model performing well, you'll frequently encounter situations where the model doesn't produce the outcome that you want on the first try. You may have to revise the language in your prompt or the way that it's written several times to get the model to behave in the way that you want. This work to develop and improve the prompt is known as prompt engineering. This is a big topic. 
+
+But one powerful strategy to get the model to produce better outcomes is to include examples of the task that you want the model to carry out inside the prompt. Providing examples inside the context window is called **in-context learning**.
+
+## In-Context Learning (ICL) - zero shot inference
+With in-context learning, you can help LLMs learn more about the task being asked by including examples or additional data in the prompt.
+
+Here is a concrete example. Within the prompt shown here, you ask the model to classify the sentiment of a review.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/94532627-5f42-433b-bb5f-788f9f822850)
+
+So whether the review of this movie is positive or negative, the prompt consists of the instruction, "Classify this review," followed by some context, which in this case is the review text itself, and an instruction to produce the sentiment at the end. This method, including your input data within the prompt, is called **zero-shot inference**. The largest of the LLMs are surprisingly good at this, grasping the task to be completed and returning a good answer. In this example, the model correctly identifies the sentiment as positive. Smaller models, on the other hand, can struggle with this.
+
+Here's an example of a completion generated by GPT-2, an earlier smaller version of the model that powers ChatGPT. As you can see, the model doesn't follow the instruction. While it does generate text with some relation to the prompt, the model can't figure out the details of the task and does not identify the sentiment. This is where providing an example within the prompt can improve performance. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/55bdc08f-0408-4028-bcff-77cec011004d)
+
+This is where providing an example within the prompt can improve performance. Here you can see that the prompt text is longer and now starts with a completed example that demonstrates the tasks to be carried out to the model. After specifying that the model should classify the review, the prompt text includes a sample review. I loved this movie, followed by a completed sentiment analysis. In this case, the review is positive. Next, the prompt states the instruction again and includes the actual input review that we want the model to analyze. You pass this new longer prompt to the smaller model, which now has a better chance of understanding the task you're specifying and the format of the response that you want. The inclusion of a single example is known as one-shot inference, in contrast to the zero-shot prompt you supplied earlier. 
+Sometimes a single example won't be enough for the model to learn what you want it to do. So you can extend the idea of giving a single example to include multiple examples. This is known as few-shot inference.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/58d282b4-5d9f-4848-a80b-e25abe9e7bfc)
+
+So in summary, you can engineer your prompts to encourage the model to learn by examples. While the largest models are good at zero-shot inference with no examples, smaller models can benefit from one-shot or few-shot inference that include examples of the desired behavior. But remember the context window because you have a limit on the amount of in-context learning that you can pass into the model. Generally, if you find that your model isn't performing well when, say, including five or six examples, you should try fine-tuning your model instead. Fine-tuning performs additional training on the model using new data to make it more capable of the task you want it to perform. 
+
+You may have to try out a few models to find the right one for your use case. Once you've found the model that is working for you, there are a few settings that you can experiment with to influence the structure and style of the completions that the model generates.
+
+# Generative configuration
+Some of the methods and associated configuration parameters that you can use to influence the way that the model makes the final decision about next-word generation. 
+
+If you've used LLMs in playgrounds such as on the Hugging Face website or an AWS, you might have been presented with controls like these to adjust how the LLM behaves.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/7c9c527d-4a4f-4358-bbac-37a92f5ed80d)
+
+Each model exposes a set of configuration parameters that can influence the model's output during inference. Note that these are different than the training parameters which are learned during training time. Instead, these configuration parameters are invoked at inference time and give you control over things like the **maximum number of tokens in the completion**, and how creative the output is. 
+
+**Max new tokens** is probably the simplest of these parameters, and you can use it to limit the number of tokens that the model will generate. You can think of this as putting a cap on the number of times the model will go through the selection process. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/9bae1689-9c7b-493b-be1b-6a5660c41959)
+
+Here you can see examples of max new tokens being set to 100, 150, or 200. But note how the length of the completion in the example for 200 is shorter. This is because another stop condition was reached, such as the model predicting and end of sequence token. Remember it's max new tokens, not a hard number of new tokens generated. 
+
+The output from the transformer's softmax layer is a probability distribution across the entire dictionary of words that the model uses. Here you can see a selection of words and their probability score next to them.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/5e9a5a9b-3e84-4766-a791-28cfa5dd29c1)
+
+Although we are only showing four words here, imagine that this is a list that carries on to the complete dictionary. Most large language models by default will operate with so-called greedy decoding. This is the simplest form of next-word prediction, where the model will always choose the word with the highest probability. This method can work very well for short generation but is susceptible to repeated words or repeated sequences of words. If you want to generate text that's more natural, more creative and avoids repeating words, you need to use some other controls. Random sampling is the easiest way to introduce some variability. Instead of selecting the most probable word every time with random sampling, the model chooses an output word at random using the probability distribution to weight the selection. For example, in the illustration, the word banana has a probability score of 0.02. With random sampling, this equates to a 2% chance that this word will be selected. By using this sampling technique, we reduce the likelihood that words will be repeated. However, depending on the setting, there is a possibility that the output may be too creative, producing words that cause the generation to wander off into topics or words that just don't make sense.
+
+Note that in some implementations, you may need to disable greedy and enable random sampling explicitly. For example, the Hugging Face transformers implementation that we use in the lab requires that we set do sample to equal true. 
+
+Let's explore top k and top p sampling techniques to help limit the random sampling and increase the chance that the output will be sensible. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/1dfa1d3b-8d75-418a-bb86-faa1f7b0b015)
+
+Two Settings, top p and top k are sampling techniques that we can use to help limit the random sampling and increase the chance that the output will be sensible. To limit the options while still allowing some variability, you can specify a top k value which instructs the model to choose from only the k tokens with the highest probability. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/3a8e94aa-5a34-4ab7-bf93-74b7d3e5b772)
+
+In this example here, k is set to three, so you're restricting the model to choose from these three options. The model then selects from these options using the probability weighting and in this case, it chooses donut as the next word. This method can help the model have some randomness while preventing the selection of highly improbable completion words. This in turn makes your text generation more likely to sound reasonable and to make sense. 
+
+Alternatively, you can use the top p setting to limit the random sampling to the predictions whose combined probabilities do not exceed p. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/6fa49310-4452-4bd2-b723-baed0359cee1)
+
+For example, if you set p to equal 0.3, the options are cake and donut since their probabilities of 0.2 and 0.1 add up to 0.3. The model then uses the random probability weighting method to choose from these tokens. With top k, you specify the number of tokens to randomly choose from, and with top p, you specify the total probability that you want the model to choose from.
+
+One more parameter that you can use to control the randomness of the model output is known as **temperature**. This parameter influences the shape of the probability distribution that the model calculates for the next token. Broadly speaking, the higher the temperature, the higher the randomness, and the lower the temperature, the lower the randomness. 
+
+The temperature value is a scaling factor that's applied within the final softmax layer of the model that impacts the shape of the probability distribution of the next token. In contrast to the top k and top p parameters, changing the temperature actually alters the predictions that the model will make. If you choose a low value of temperature, say less than one, the resulting probability distribution from the softmax layer is more strongly peaked with the probability being concentrated in a smaller number of words. You can see this here in the blue bars beside the table, which show a probability bar chart turned on its side. Most of the probability here is concentrated on the word cake.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/5d89d77e-85b0-421f-9877-786973116a01)
+
+The model will select from this distribution using random sampling and the resulting text will be less random and will more closely follow the most likely word sequences that the model learned during training. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/95217434-d5c5-4931-abc9-3e039a146681)
+
+If instead you set the temperature to a higher value, say, greater than one, then the model will calculate a broader flatter probability distribution for the next token. Notice that in contrast to the blue bars, the probability is more evenly spread across the tokens. **This leads the model to generate text with a higher degree of randomness and more variability in the output compared to a cool temperature setting**. 
+
+This can help you generate text that sounds more creative. If you leave the temperature value equal to one, this will leave the softmax function as default and the unaltered probability distribution will be used. You've covered a lot of ground so far. You've examined the types of tasks that LLMs are capable of performing and learned about transformers, the model architecture that powers these amazing tools. You've also explored how to get the best possible performance out of these models using prompt engineering and by experimenting with different inference configuration parameters. In the next video, you'll start building on this foundational knowledge by thinking through the steps required to develop and launch an LLM -powered application.
+
+# Generative AI project lifecycle
