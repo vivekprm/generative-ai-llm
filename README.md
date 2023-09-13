@@ -255,3 +255,22 @@ If instead you set the temperature to a higher value, say, greater than one, the
 This can help you generate text that sounds more creative. If you leave the temperature value equal to one, this will leave the softmax function as default and the unaltered probability distribution will be used. You've covered a lot of ground so far. You've examined the types of tasks that LLMs are capable of performing and learned about transformers, the model architecture that powers these amazing tools. You've also explored how to get the best possible performance out of these models using prompt engineering and by experimenting with different inference configuration parameters. In the next video, you'll start building on this foundational knowledge by thinking through the steps required to develop and launch an LLM -powered application.
 
 # Generative AI project lifecycle
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/fad8128b-14bf-4796-ad91-f57a6d58edd7)
+
+The most important step in any project is to define the scope as accurately and narrowly as you can. As you've seen in this course so far, LLMs are capable of carrying out many tasks, but their abilities depend strongly on the size and architecture of the model. You should think about what function the LLM will have in your specific application. Do you need the model to be able to carry out many different tasks, including long-form text generation or with a high degree of capability, or is the task much more specific like named entity recognition so that your model only needs to be good at one thing.
+
+Once you're happy, and you've scoped your model requirements enough to begin development. Your first decision will be whether to train your own model from scratch or work with an existing base model. In general, you'll start with an existing model, although there are some cases where you may find it necessary to train a model from scratch.
+
+With your model in hand, the next step is to assess its performance and carry out additional training if needed for your application. As you saw earlier, prompt engineering can sometimes be enough to get your model to perform well, so you'll likely start by trying in-context learning, using examples suited to your task and use case. There are still cases, however, where the model may not perform as well as you need, even with one or a few short inference, and in that case, you can try fine-tuning your model.
+
+As models become more capable, it's becoming increasingly important to ensure that they behave well and in a way that is aligned with human preferences in deployment.
+
+An important aspect of all of these techniques is evaluation. You will explore some metrics and benchmarks that can be used to determine how well your model is performing or how well aligned it is to your preferences.
+
+Note that this adapt and aligned stage of app development can be highly iterative. You may start by trying prompt engineering and evaluating the outputs, then using fine tuning to improve performance and then revisiting and evaluating prompt engineering one more time to get the performance that you need.
+
+Finally, when you've got a model that is meeting your performance needs and is well aligned, you can deploy it into your infrastructure and integrate it with your application. At this stage, an important step is to optimize your model for deployment. This can ensure that you're making the best use of your compute resources and providing the best possible experience for the users of your application. The last but very important step is to consider any additional infrastructure that your application will require to work well. There are some fundamental limitations of LLMs that can be difficult to overcome through training alone like their tendency to invent information when they don't know an answer, or their limited ability to carry out complex reasoning and mathematics. 
+
+https://aws.amazon.com/blogs/aws/generative-ai-with-large-language-models-new-hands-on-course-by-deeplearning-ai-and-aws/
+https://huggingface.co
