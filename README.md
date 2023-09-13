@@ -26,3 +26,126 @@ The text that you pass to an LLM is known as a prompt. The space or memory that 
 
 In this example, you ask the model to determine where Ganymede is located in the solar system. The prompt is passed to the model, the model then predicts the next words, and because your prompt contained a question, this model generates an answer. The output of the model is called a completion, and the act of using the model to generate text is known as inference. The completion is comprised of the text contained in the original prompt, followed by the generated text. You can see that this model did a good job of answering your question. It correctly identifies that Ganymede is a moon of Jupiter and generates a reasonable answer to your question stating that the moon is located within Jupiter's orbit.
 
+## LLM use cases and tasks
+You could be forgiven for thinking that LLMs and generative AI are focused on chats tasks. After all, chatbots are highly visible and getting a lot of attention. 
+
+**Next word prediction is the base concept behind a number of different capabilities**, starting with a basic chatbot. However, you can use this conceptually simple technique for a variety of other tasks within text generation. 
+
+For example, you can ask a model to write an essay based on a prompt, to summarize conversations where you provide the dialogue as part of your prompt and the model uses this data along with its understanding of natural language to generate a summary. 
+
+You can use models for a variety of translation tasks from traditional translation between two different languages, such as French and German, or English and Spanish. 
+
+Or to translate natural language to machine code. For example, you could ask a model to write some Python code that will return the mean of every column in a DataFrame and the model will generate code that you can pass to an interpreter. 
+
+You can use LLMs to carry out smaller, focused tasks like information retrieval. In this example, you ask the model to identify all of the people and places identified in a news article. This is known as **named entity recognition, a word classification**. The understanding of knowledge encoded in the model's parameters allows it to correctly carry out this task and return the requested information to you. 
+
+Finally, an area of active development is **augmenting LLMs by connecting them to external data sources or using them to invoke external APIs**. You can use this ability to provide the model with information it doesn't know from its pre-training and to enable your model to power interactions with the real-world. 
+
+Developers have discovered that as the scale of foundation models grows from hundreds of millions of parameters to billions, even hundreds of billions, the subjective understanding of language that a model possesses also increases. This language understanding stored within the parameters of the model is what processes, reasons, and ultimately solves the tasks you give it, but it's also true that smaller models can be fine tuned to perform well on specific focused tasks. 
+
+The rapid increase in capability that LLMs have exhibited in the past few years is largely due to the architecture that powers them.
+
+It's important to note that generative algorithms are not new. Previous generations of language models made use of an architecture called **recurrent neural networks or RNNs**. RNNs while powerful for their time, were limited by the amount of compute and memory needed to perform well at generative tasks.
+
+Let's look at an example of an RNN carrying out a simple next-word prediction generative task. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/94152d79-a294-4caf-b787-414af52c3bdb)
+
+With just one previous words seen by the model, the prediction can't be very good. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/998a3254-2642-43ec-9358-9f6876d1b797)
+
+As you scale the RNN implementation to be able to see more of the preceding words in the text, you have to significantly scale the resources that the model uses. As for the prediction, well, the model failed here. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/d3f4d7bd-c5f8-4ca7-935f-0ef8322b411d)
+
+Even though you scale the model, it still hasn't seen enough of the input to make a good prediction. To successfully predict the next word, models need to see more than just the previous few words. Models needs to have an understanding of the whole sentence or even the whole document. The problem here is that language is complex. In many languages, one word can have multiple meanings. These are homonyms. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/c0e05e4a-8077-4eb1-a8a3-08f48933d22c)
+
+In this case, it's only with the context of the sentence that we can see what kind of bank is meant. Words within a sentence structures can be ambiguous or have what we might call **syntactic ambiguity**.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/ddb416a6-d444-4c58-b50d-11ce04d3a9fe)
+
+Take for example this sentence, "The teacher taught the students with the book." Did the teacher teach using the book or did the student have the book, or was it both? How can an algorithm make sense of human language if sometimes we can't? 
+
+Well in 2017, after the publication of this paper, Attention is All You Need, from Google and the University of Toronto, everything changed. The transformer architecture had arrived. This novel approach unlocked the progress in generative AI that we see today. 
+
+- It can be scaled efficiently to use multi-core GPUs.
+- It can parallel process input data, making use of much larger training datasets.
+- And crucially, it's able to learn to pay attention to the meaning of the words it's processing. And attention is all you need. It's in the title.
+
+# Transformers Architecture
+Building large language models using the transformer architecture dramatically improved the performance of natural language tasks over the earlier generation of RNNs, and led to an explosion in regenerative capability. 
+
+The power of the transformer architecture lies in its ability to learn the relevance and context of all of the words in a sentence.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/a7655a10-665a-4c4a-825f-4a4c64931266)
+
+Not just as you see here, to each word next to its neighbor, but to every other word in a sentence.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/0b9e35dd-83a8-4476-a3df-eeabbca7e920)
+
+To apply attention weights to those relationships so that the model learns the relevance of each word to each other words no matter where they are in the input. This gives the algorithm the ability to learn who has the book, who could have the book, and if it's even relevant to the wider context of the document. These attention weights are learned during LLM training.
+
+## Self Attention
+This diagram is called an attention map and can be useful to illustrate the attention weights between each word and every other word. Here in this stylized example, you can see that the word book is strongly connected with or paying attention to the word teacher and the word student. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/09bedf17-52da-48e7-a8f5-6f5125d1f95a)
+
+This is called **self-attention** and the ability to learn attention in this way across the whole input significantly approves the model's ability to encode language. Now that you've seen one of the key attributes of the transformer architecture, self-attention, let's cover at a high level how the model works. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/db4700fa-36b5-40f0-851c-d535adda6d95)
+
+Below is the simplified diagram of the Transformer Architecture 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/768d4956-c9f9-45f4-8f38-49f690c4e27c)
+
+The transformer architecture is split into two distinct parts, the encoder and the decoder. These components work in conjunction with each other and they share a number of similarities.
+
+Also, note here, the diagram you see above is derived from the original attention is all you need paper. Notice how the inputs to the model are at the bottom and the outputs are at the top, where possible we'll try to remain faithful to this throughout the course.
+
+Now, machine-learning models are just big statistical calculators and they work with numbers, not words. So before passing texts into the model to process, you must first tokenize the words. Simply put, this converts the words into numbers, with each number representing a position in a dictionary of all the possible words that the model can work with. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/89ee5748-706a-46fb-b748-d89bbc2962c6)
+
+You can choose from multiple tokenization methods. For example, token IDs matching two complete words, or using token IDs to represent parts of words. As you can see here. What's important is that once you've selected a tokenizer to train the model, you must use the same tokenizer when you generate text. 
+
+Now that your input is represented as numbers, you can pass it to the embedding layer. This layer is a trainable vector embedding space, a high-dimensional space where **each token is represented as a vector and occupies a unique location within that space**. Each token ID in the vocabulary is matched to a multi-dimensional vector, and the intuition is that these vectors learn to encode the meaning and context of individual tokens in the input sequence. 
+
+Embedding vector spaces have been used in natural language processing for some time, previous generation language algorithms like Word2vec use this concept. 
+
+Looking back at the sample sequence, you can see that in this simple case, each word has been matched to a token ID, and each token is mapped into a vector.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/112d3649-cd8f-456b-8568-b5f791ba41d2)
+
+In the original transformer paper, the vector size was actually 512, so much bigger than we can fit onto this image. For simplicity, if you imagine a vector size of just three, you could plot the words into a three-dimensional space and see the relationships between those words. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/901f3ec0-fad2-42d4-8c6d-e3f9391344b6)
+
+You can see now how you can relate words that are located close to each other in the embedding space, and how you can calculate the distance between the words as an angle, which gives the model the ability to mathematically understand language. As you add the token vectors into the base of the encoder or the decoder, you also add positional encoding.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/6f4d09ee-fd24-4dbe-83e7-b9a392415094)
+
+The model processes each of the input tokens in parallel. So by adding the positional encoding, you preserve the information about the word order and don't lose the relevance of the position of the word in the sentence. Once you've summed the input tokens and the positional encodings, you pass the resulting vectors to the self-attention layer.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/17c366db-7e41-4802-bf1b-a7f7a8168c32)
+
+Here, the model analyzes the relationships between the tokens in your input sequence. As you saw earlier, this allows the model to attend to different parts of the input sequence to better capture the contextual dependencies between the words.
+
+The self-attention weights that are learned during training and stored in these layers reflect the importance of each word in that input sequence to all other words in the sequence. But this does not happen just once, the transformer architecture actually has multi-headed self-attention. This means that multiple sets of self-attention weights or heads are learned in parallel independently of each other. The number of attention heads included in the attention layer varies from model to model, but numbers in the range of 12-100 are common. 
+
+The intuition here is that each self-attention head will learn a different aspect of language. For example, one head may see the relationship between the people entities in our sentence. Whilst another head may focus on the activity of the sentence. Whilst yet another head may focus on some other properties such as if the words rhyme. It's important to note that you don't dictate ahead of time what aspects of language the attention heads will learn. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/e622b96c-6d3c-4d29-b58d-e74817b95829)
+
+Now that all of the attention weights have been applied to your input data, the output is processed through a fully-connected feed-forward network. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/5eb23571-46c2-462f-87c9-11286304068a)
+
+
+The output of this layer is a vector of logits proportional to the probability score for each and every token in the tokenizer dictionary. You can then pass these logits to a final softmax layer, where they are normalized into a probability score for each word. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/1d44d1c0-01c5-4acd-a988-cfdeb1bafbe1)
+
+This output includes a probability for every single word in the vocabulary, so there's likely to be thousands of scores here. One single token will have a score higher than the rest. This is the most likely predicted token. 
