@@ -274,3 +274,9 @@ Finally, when you've got a model that is meeting your performance needs and is w
 
 https://aws.amazon.com/blogs/aws/generative-ai-with-large-language-models-new-hands-on-course-by-deeplearning-ai-and-aws/
 https://huggingface.co
+
+# Lab
+In apache sagemaker terminal run:
+```sh
+aws s3 cp --recursive s3://dlai-generative-ai/labs/w1-549876/ ./
+```
