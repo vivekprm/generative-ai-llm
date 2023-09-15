@@ -155,3 +155,59 @@ Remember, the goal during pre-training is to maximize the model's performance of
 Two options you have to achieve better performance are **increasing the size of the dataset** you train your model on and **increasing the number of parameters** in your model. In theory, you could scale either of both of these quantities to improve performance. 
 
 However, another issue to take into consideration is your compute budget which includes factors like the number of GPUs you have access to and the time you have available for training models. 
+
+To help you understand some of the discussion ahead, let's first define a unit of compute that quantifies the required resources. A petaFLOP per second day is a measurement of the number of floating point operations performed at a rate of one petaFLOP per second, running for an entire day. 
+
+Note, one petaFLOP corresponds to one quadrillion floating point operations per second. When specifically thinking about training transformers, one petaFLOP per second day is approximately equivalent to eight NVIDIA V100 GPUs, operating at full efficiency for one full day.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/054f47f7-3152-410e-b114-3f6388b01de6)
+
+If you have a more powerful processor that can carry out more operations at once, then a petaFLOP per second day requires fewer chips.
+
+For example, **two NVIDIA A100 GPUs** give equivalent compute to the **eight V100 chips**. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/57b4c226-7788-40e2-b0ad-860532ff5f0c)
+
+To give you an idea off the scale of these compute budgets, this chart shows a comparison off the petaFLOP per second days required to pre-train different variance of Bert and Roberta, which are both encoder only models. T5 and encoder-decoder model and GPT-3, which is a decoder only model.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/dfb36ee7-a614-4986-8e6a-d29ea5363621)
+
+The difference between the models in each family is the number of parameters that were trained, ranging from a few hundred million for Bert base to 175 billion for the largest GPT-3 variant. Note that the y-axis is logarithmic. Each increment vertically is a power of 10. Here we see that T5 XL with three billion parameters required close to 100 petaFLOP per second days. While the larger GPT-3 175 billion parameter model required approximately 3,700 petaFLOP per second days. This chart makes it clear that a huge amount of computers required to train the largest models.
+
+You can see that bigger models take more compute resources to train and generally also require more data to achieve good performance. 
+
+It turns out that there are actually well-defined relationships between these three scaling choices. 
+
+Researchers have explored the trade-offs between training dataset size, model size and compute budget. Here's a figure from a paper by researchers at OpenAI that explores the impact of compute budget on model performance. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/054fa931-59d9-48c2-a7d2-645293adcd84)
+
+The y-axis is the test loss, which you can consider as a proxy for model performance where smaller values are better. The x-axis is the compute budget in units of petaFLOP per second days. As you just saw, larger numbers can be achieved by either using more compute power or training for longer or both. Each thin blue line here shows the model loss over a single training run. 
+
+Looking at where the loss starts to decline more slowly for each run, reveals a clear relationship between the compute budget and the model's performance. This can be approximated by a power-law relationship, shown by this pink line. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/c53da54f-904a-4d49-88a2-e324e1f3d296)
+
+A power law is a mathematical relationship between two variables, where one is proportional to the other raised to some power. When plotted on a graph where both axes are logarithmic, power-law relationships appear as straight lines.
+
+The relationship here holds as long as model size and training dataset size don't inhibit the training process. Taken at face value, this would suggest that you can just increase your compute budget to achieve better model performance. 
+
+In practice however, the compute resources you have available for training will generally be a hard constraint set by factors such as:
+- The hardware you have access to.
+- The time available for training
+- And the financial budget of the project.
+
+If you hold your compute budget fixed, the two levers you have to improve your model's performance are:
+- The size of the training dataset
+- And the number of parameters in your model.
+
+The OpenAI researchers found that these two quantities also show a power-law relationship with a test loss in the case where the other two variables are held fixed. This is another figure from the paper exploring the impact of training dataset size on model performance. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/d1d7d889-1251-4b6d-8af2-db0875d6218f)
+
+Here, the compute budget and model size are held fixed and the size of the training dataset is vary. The graph shows that as the volume of training data increases, the performance of the model continues to improve. In the second graph, the compute budget and training dataset size are held constant. Models of varying numbers of parameters are trained. As the model increases in size, the test loss decreases indicating better performance. 
+
+At this point you might be asking, what's the ideal balance between these three quantities? Well, it turns out a lot of people are interested in this question. Both research and industry communities have published a lot of empirical data for pre-training compute optimal models. 
+
+[In a paper](https://arxiv.org/abs/2203.15556) published in 2022, a group of researchers led by Jordan Hoffmann, Sebastian Borgeaud and Arthur Mensch carried out a detailed study of the performance of language models of various sizes and quantities of training data. The goal was to find the optimal number of parameters and volume of training data for a given compute budget. The author's name, the resulting compute optimal model, **Chinchilla**. This paper is often referred to as the Chinchilla paper. Let's take a look at some of their findings.
+
