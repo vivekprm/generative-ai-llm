@@ -77,3 +77,39 @@ You can see here that the model didn't do a great job, it classified the review 
 You'll do this for many batches of prompt completion pairs and over several epochs, update the weights so that the model's performance on the task improves. As in standard supervised learning, you can define separate evaluation steps to measure your LLM performance using the holdout validation data set. This will give you the validation accuracy, and after you've completed your fine tuning, you can perform a final performance evaluation using the holdout test data set. This will give you the test accuracy. 
 
 The fine-tuning process results in a new version of the base model, often called an instruct model that is better at the tasks you are interested in. Fine-tuning with instruction prompts is the most common way to fine-tune LLMs these days. 
+
+# Fine-tuning on a Single Task
+While LLMs have become famous for their ability to perform many different language tasks within a single model, your application may only need to perform a single task. In this case, you can fine-tune a pre-trained model to improve performance on only the task that is of interest to you. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/05c9f402-0de5-451f-811f-6710ce0020be)
+
+For example, summarization using a dataset of examples for that task. Interestingly, good results can be achieved with relatively few examples. Often just 500-1,000 examples can result in good performance in contrast to the billions of pieces of texts that the model saw during pre-training. 
+
+However, there is a potential downside to fine-tuning on a single task. The process may lead to a phenomenon called **catastrophic forgetting**. 
+
+## Catastrophic Forgetting
+Catastrophic forgetting happens because the full fine-tuning process modifies the weights of the original LLM. While this leads to great performance on the single fine-tuning task, it can degrade performance on other tasks. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/467beacb-36fb-4c57-9905-5c53bf6a7d1f)
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/bf10dac1-9466-4427-9aac-afac7b581e86)
+
+For example, while fine-tuning can improve the ability of a model to perform sentiment analysis on a review and result in a quality completion, the model may forget how to do other tasks. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/9340b628-bcab-4499-a490-a842329da43a)
+
+This model knew how to carry out named entity recognition before fine-tuning correctly identifying Charlie as the name of the cat in the sentence. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/db6ca0d1-ddda-4538-87f6-e97537e62e3a)
+
+But after fine-tuning, the model can no longer carry out this task, confusing both the entity it is supposed to identify and exhibiting behavior related to the new task. 
+
+What options do you have to avoid catastrophic forgetting?
+- First of all, it's important to decide whether catastrophic forgetting actually impacts your use case. If all you need is reliable performance on the single task you fine-tuned on, it may not be an issue that the model can't generalize to other tasks.
+- If you do want or need the model to maintain its multitask generalized capabilities, **you can perform fine-tuning on multiple tasks at one time**. 
+
+Good multitask fine-tuning may require 50-100,000 examples across many tasks, and so will require more data and compute to train. 
+
+Our second option is to perform **Parameter Efficient Fine-tuning**, or PEFT for short instead of full fine-tuning. PEFT is a set of techniques that preserves the weights of the original LLM and trains only a small number of task-specific adapter layers and parameters. PEFT shows greater robustness to catastrophic forgetting **since most of the pre-trained weights are left unchanged**. 
+
+# Multi-task Instruction fine-tuning
