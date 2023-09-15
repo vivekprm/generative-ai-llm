@@ -184,3 +184,5 @@ There is no fabricated information and the summary includes all of the important
 In practice, you'll get the most out of fine-tuning by using your company's own internal data. For example, the support chat conversations from your customer support application. This will help the model learn the specifics of how your company likes to summarize conversations and what is most useful to your customer service colleagues.  
 
 One thing you need to think about when fine-tuning is how to evaluate the quality of your models completions. Next you'll learn about several metrics and benchmarks that you can use to determine how well your model is performing and how much better you're fine-tuned version is than the original base model.
+
+https://arxiv.org/abs/2210.11416
