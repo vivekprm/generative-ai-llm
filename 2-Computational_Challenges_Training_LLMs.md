@@ -144,3 +144,14 @@ FSDP on the other hand can easily handle models this size and achieve much highe
 The second figure shows 7% decrease in per GPU teraflops when increasing the number of GPUs from 8-512 for the 11 billion T5 model, plotted here using a batch size of 16 and orange and a batch size of eight in blue. As the model grows in size and is distributed across more and more GPUs, the increase in communication volume between chips starts to impact the performance, slowing down the computation. 
 
 In summary, this shows that you can use FSDP for both small and large models and seamlessly scale your model training across multiple GPUs.
+
+# Scaling Laws and Compute Optimal Models
+Here we'll learn about research that has explored the relationship between model size, training, configuration and performance in an effort to determine just how big models need to be. 
+
+Remember, the goal during pre-training is to maximize the model's performance of its learning objective, which is minimizing the loss when predicting tokens.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/3c074115-36ec-4b44-a8e9-a7383ef16865)
+
+Two options you have to achieve better performance are **increasing the size of the dataset** you train your model on and **increasing the number of parameters** in your model. In theory, you could scale either of both of these quantities to improve performance. 
+
+However, another issue to take into consideration is your compute budget which includes factors like the number of GPUs you have access to and the time you have available for training models. 
