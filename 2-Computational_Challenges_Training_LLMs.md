@@ -211,3 +211,22 @@ At this point you might be asking, what's the ideal balance between these three 
 
 [In a paper](https://arxiv.org/abs/2203.15556) published in 2022, a group of researchers led by Jordan Hoffmann, Sebastian Borgeaud and Arthur Mensch carried out a detailed study of the performance of language models of various sizes and quantities of training data. The goal was to find the optimal number of parameters and volume of training data for a given compute budget. The author's name, the resulting compute optimal model, **Chinchilla**. This paper is often referred to as the Chinchilla paper. Let's take a look at some of their findings.
 
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/a6170a93-b777-4240-b32c-7f8a1f5d60da)
+
+The Chinchilla paper hints that many of the 100 billion parameter large language models like GPT-3 may actually be over parameterized, meaning they have more parameters than they need to achieve a good understanding of language and under trained so that they would benefit from seeing more training data. The authors hypothesized that smaller models may be able to achieve the same performance as much larger ones if they are trained on larger datasets. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/3b7a02fd-3907-461d-94f3-19f2899f2e3c)
+
+In this table, you can see a selection of models along with their size and information about the dataset they were trained on. One important takeaway from the Chinchilla paper is that the optimal training dataset size for a given model is about 20 times larger than the number of parameters in the model.
+
+**Chinchilla was determined to be compute optimal**. For a 70 billion parameter model, the ideal training dataset contains 1.4 trillion tokens or 20 times the number of parameters. The last three models in the table were trained on datasets that are smaller than the Chinchilla optimal size. These models may actually be under trained. 
+
+In contrast, **LLaMA** was trained on a dataset size of 1.4 trillion tokens, which is close to the Chinchilla recommended number. 
+
+Another important result from the paper is that the **compute optimal Chinchilla model outperforms non compute optimal models such as GPT-3 on a large range of downstream evaluation tasks**. 
+
+With the results of the Chinchilla paper in hand teams have recently started to develop smaller models that achieved similar, if not better results than larger models that were trained in a non-optimal way. Moving forward, you can probably expect to see a deviation from the bigger is always better trends of the last few years as more teams or developers like you start to optimize their model design. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/34f0e6c8-4cd2-432a-be25-bf7b02b6023c)
+
+The last model shown on this slide, **Bloomberg GPT**, is a really interesting model. It was trained in a compute optimal way following the Chinchilla loss and so achieves good performance with the size of 50 billion parameters. It's also an interesting example of a situation where pre-training a model from scratch was necessary to achieve good task performance.
