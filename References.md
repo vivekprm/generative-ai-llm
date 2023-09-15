@@ -1,4 +1,7 @@
 # References
+## Lecture Notes
+https://community.deeplearning.ai/t/genai-with-llms-lecture-notes/361913
+
 ## Transformer Architecture
 [Attention is All You Need](https://arxiv.org/pdf/1706.03762) - This paper introduced the Transformer architecture, with the core “self-attention” mechanism. This article was the foundation for LLMs.
 
