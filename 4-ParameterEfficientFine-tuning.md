@@ -150,3 +150,10 @@ One potential issue to consider is the interpretability of learned virtual token
 We explored two PEFT methods in this lesson LoRA, which uses **rank decomposition matrices** to update the model parameters in an efficient way. And Prompt Tuning, where **trainable tokens are added to your prompt and the model weights are left untouched**. Both methods enable you to fine tune models with the potential for improved performance on your tasks while using much less compute than full fine tuning methods. 
 
 LoRA is broadly used in practice because of the comparable performance to full fine tuning for many tasks and data sets.
+
+# Lab 2: Fine-tune a generative AI model for dialogue summarization
+https://labs.vocareum.com/main/main.php?m=clabide&mode=s&asnid=1843535&stepid=1843536&hideNavBar=1
+
+```sh
+aws s3 cp --recursive s3://dlai-generative-ai/labs/w2-170864/ ./
+```
