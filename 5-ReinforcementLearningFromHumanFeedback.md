@@ -352,3 +352,64 @@ I know that there is a lot to take in here, but don't worry, RLHF with PEFT is g
 The number you'll use here is the toxicity score, this is the probability of the negative class, in this case, a toxic or hateful response averaged across the completions. If RHF has successfully reduce the toxicity of your LLM, this score should go down. First, you'll create a baseline toxicity score for the original instruct LLM by evaluating its completions off the summarization data set with a reward model that can assess toxic language. Then you'll evaluate your newly human aligned model on the same data set and compare the scores. In this example, the toxicity score has indeed decreased after Arlo HF, indicating a less toxic, better aligned model.
 
 ![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/a458988b-b9a1-465d-a0a7-1c042519768e)
+
+# KL Divergence
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/f50e9598-6cf0-41a4-aa1d-25b4b5757952)
+
+KL-Divergence, or Kullback-Leibler Divergence, is a concept often encountered in the field of reinforcement learning, particularly when using the Proximal Policy Optimization (PPO) algorithm. **It is a mathematical measure of the difference between two probability distributions**, which helps us understand how one distribution differs from another. In the context of PPO, KL-Divergence plays a crucial role in guiding the optimization process to ensure that the updated policy does not deviate too much from the original policy.
+
+In PPO, the goal is to find an improved policy for an agent by iteratively updating its parameters based on the rewards received from interacting with the environment. However, updating the policy too aggressively can lead to unstable learning or drastic policy changes. To address this, **PPO introduces a constraint that limits the extent of policy updates. This constraint is enforced by using KL-Divergence**.
+
+To understand how KL-Divergence works, imagine we have two probability distributions: the distribution of the original LLM, and a new proposed distribution of an RL-updated LLM. KL-Divergence measures the average amount of information gained when we use the original policy to encode samples from the new proposed policy. By minimizing the KL-Divergence between the two distributions, PPO ensures that the updated policy stays close to the original policy, preventing drastic changes that may negatively impact the learning process.
+
+A library that you can use to train transformer language models with reinforcement learning, using techniques such as PPO, is TRL (Transformer Reinforcement Learning). In [this link](https://huggingface.co/blog/trl-peft) you can read more about this library, and its integration with PEFT (Parameter-Efficient Fine-Tuning) methods, such as LoRA (Low-Rank Adaption). The image shows an overview of the PPO training setup in TRL.
+
+# Scaling Human Feedback
+Although you can use a reward model to eliminate the need for human evaluation during RLHF fine tuning, **the human effort required to produce the trained reward model in the first place is huge**. The labeled data set used to train the reward model typically requires large teams of labelers, sometimes many thousands of people to evaluate many prompts each. 
+
+This work requires a lot of time and other resources which can be important limiting factors. As the number of models and use cases increases, human effort becomes a limited resource.
+
+Methods to scale human feedback are an active area of research. One idea to overcome these limitations is to scale through model self supervision. Constitutional AI is one approach of scale supervision. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/4922bf56-31ec-4d22-850a-eebf4e031322)
+
+First proposed in 2022 by researchers at Anthropic, Constitutional AI is a method for training models using a set of rules and principles that govern the model's behavior. Together with a set of sample prompts, these form the constitution. You then train the model to self critique and revise its responses to comply with those principles. Constitutional AI is useful not only for scaling feedback, it can also help address some unintended consequences of RLHF. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/0e4633a6-6a78-4881-84a8-172d95edbc9d)
+
+For example, depending on how the prompt is structured, an aligned model may end up revealing harmful information as it tries to provide the most helpful response it can. As an example, imagine you ask the model to give you instructions on how to hack your neighbor's WiFi.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/240638b4-dfd9-492d-8366-22327e9708f0)
+
+Because this model has been aligned to prioritize helpfulness, it actually tells you about an app that lets you do this, even though this activity is illegal. Providing the model with a set of constitutional principles can help the model balance these competing interests and minimize the harm. Here are some example rules from the research paper that Constitutional AI I asks LLMs to follow. 
+
+## Example of Constitutional Principles
+For example, you can tell the model to choose the response that is the most helpful, honest, and harmless. But you can play some bounds on this, asking the model to prioritize harmlessness by assessing whether it's response encourages illegal, unethical, or immoral activity. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/a59f0eb1-9c32-42fc-93b1-9d802c32dff3)
+
+Note that you don't have to use the rules from the paper, you can define your own set of rules that is best suited for your domain and use case. When implementing the Constitutional AI method, you train your model in two distinct phases. In the first stage, you carry out supervised learning, to start your prompt the model in ways that try to get it to generate harmful responses, this process is called red teaming. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/373f23cf-1ef2-4638-b1a2-1ff1f2e969b8)
+
+You then ask the model to critique its own harmful responses according to the constitutional principles and revise them to comply with those rules. Once done, you'll fine-tune the model using the pairs of red team prompts and the revised constitutional responses. Let's look at an example of how one of these prompt completion pairs is generated. 
+
+Let's return to the WiFi hacking problem. As you saw earlier, this model gives you a harmful response as it tries to maximize its helpfulness.
+
+To mitigate this, you augment the prompt using the harmful completion and a set of predefined instructions that ask the model to critique its response. Using the rules outlined in the Constitution, the model detects the problems in its response. In this case, it correctly acknowledges that hacking into someone's WiFi is illegal. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/19408457-a214-4887-ae7f-272133eefffe)
+
+Lastly, you put all the parts together and ask the model to write a new response that removes all of the harmful or illegal content. The model generates a new answer that puts the constitutional principles into practice and does not include the reference to the illegal app. 
+
+The original red team prompt, and this final constitutional response can then be used as training data. You'll build up a data set of many examples like this to create a fine-tuned NLM that has learned how to generate constitutional responses. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/57a98c9e-59f3-4bca-baf9-e2a36ea69503)
+
+The second part of the process performs reinforcement learning. This stage is similar to RLHF, except that instead of human feedback, **we now use feedback generated by a model**. This is sometimes referred to as **reinforcement learning from AI feedback or RLAIF**. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/fb09c299-065b-48e0-93d9-57726ce4d94c)
+
+Here you use the fine-tuned model from the previous step to generate a set of responses to your prompt. You then ask the model which of the responses is preferred according to the constitutional principles. The result is a model generated preference dataset that you can use to train a reward model. With this reward model, you can now fine-tune your model further using a reinforcement learning algorithm like PPO, as discussed earlier. 
+
+Aligning models is a very important topic and an active area of research. The foundations of RLHF that you've explored in this lesson will allow you to follow along as the field evolves. I'm really excited to see what new discoveries researchers make in this area.
