@@ -141,3 +141,18 @@ In the example shown here, there are three completions to a prompt, and the rank
 Depending on the number N of alternative completions per prompt, you will have N choose two combinations. For each pair, you will assign a reward of 1 for the preferred response and a reward of 0 for the less preferred response. Then you'll reorder the prompts so that the preferred option comes first. This is an important step because the reward model expects the preferred completion, which is referred to as Yj first. 
 
 Once you have completed this data, restructuring, the human responses will be in the correct format for training the reward model. Note that while thumbs-up, thumbs-down feedback is often easier to gather than ranking feedback, ranked feedback gives you more prom completion data to train your reward model. As you can see, here you get three prompt completion pairs from each human ranking.
+
+## RLHF: Reward model
+At this stage, we have everything we need to train the reward model. While it has taken a fair amount of human effort to get to this point, by the time we're done training the reward model, we won't need to include any more humans in the loop. Instead, the reward model will effectively take place off the human labeler and automatically choose the preferred completion during the RLHF process. 
+
+This reward model is usually also a language model. For example, **Bird** that is trained using supervised learning methods on the pairwise comparison data that you prepared from the human labelers assessment off the prompts. For a given prompt X, the reward model learns to favor the human-preferred completion y_ j, while minimizing the lock sigmoid off the reward difference, r_j-r_k.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/f478fb34-8fa1-426b-b63b-28c8df69cd9e)
+
+The human-preferred option is always the first one **labeled y_j**. Once the model has been trained on the human rank prompt-completion pairs, you can use the reward model as a binary classifier to provide a set of logics across the positive and negative classes. Logics are the unnormalized model outputs before applying any activation function. Let's say you want to detoxify your LLM, and the reward model needs to identify if the completion contains hate speech. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/95df03b4-d365-4b28-9bfe-167af425f639)
+
+In this case, the two classes would be notate, the positive class that you ultimately want to optimize for and hate the negative class you want to avoid. The largest value of the positive class is what you use as the reward value in LLHF. 
+
+Just to remind you, if you apply a Softmax function to the logits, you will get the probabilities. The example here shows a good reward for non-toxic completion and the second example shows a bad reward being given for toxic completion. 
