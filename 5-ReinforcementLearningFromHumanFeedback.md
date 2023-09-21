@@ -189,4 +189,6 @@ You can also define a maximum number of steps, for example, 20,000 as the stoppi
 
 One detail we haven't discussed yet is the exact nature of the reinforcement learning algorithm. This is the algorithm that takes the output of the reward model and uses it to update the LLM model weights so that the reward score increases over time. There are several different algorithms that you can use for this part of the RLHF process. A popular choice is **proximal policy optimization** or PPO for short. 
 
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/9c2b1235-07a1-4d18-960a-9c7f7b5b0142)
+
 PPO is a pretty complicated algorithm, and you don't have to be familiar with all of the details to be able to make use of it. However, it can be a tricky algorithm to implement and understanding its inner workings in more detail can help you troubleshoot if you're having problems getting it to work.
