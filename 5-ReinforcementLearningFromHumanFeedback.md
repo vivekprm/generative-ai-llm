@@ -113,6 +113,31 @@ So the labeler ranks the top completion second and the last completion third. Th
 
 The same prompt completion sets are **usually assigned to multiple human labelers to establish consensus and minimize the impact of poor labelers in the group**. 
 
-![Uploading image.png…]()
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/6a0294f7-fc0e-42cf-9510-16ec4dd1fdc7)
 
 Like the third labeler here, whose responses disagree with the others and may indicate that they misunderstood the instructions, this is actually a very important point. The clarity of your instructions can make a big difference on the quality of the human feedback you obtain. **Labelers are often drawn from samples of the population that represent diverse and global thinking**.
+
+### Sample Instructions For Human Labelers
+Here you can see an example set of instructions written for human labelers. This would be presented to the labeler to read before beginning the task and made available to refer back to as they work through the dataset. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/8a97412b-978c-4470-9b16-48fc29fc0494)
+
+The instructions start with the overall task the labeler should carry out. In this case, to choose the best completion for the prompt. The instructions continue with additional details to guide the labeler on how to complete the task. In general, the more detailed you make these instructions, the higher the likelihood that the labelers will understand the task they have to carry out and complete it exactly as you wish. 
+
+For instance, in the second instruction item, the labelers are told that they should make decisions based on their perception of the correctness and informativeness of the response. They are told they can use the Internet to fact check and find other information.
+
+They are also given clear instructions about what to do if they identify a tie, meaning a pair of completions that they think are equally correct and informative. The labelers are told that it is okay to rank two completions the same, but they should do this sparingly.
+
+A final instruction worth calling out here is what to do in the case of a nonsensical confusing or irrelevant answer. In this case, labelers should select F rather than rank, so the poor quality answers can be easily removed. Providing a detailed set of instructions like this increases the likelihood that the responses will be high quality and that individual humans will carry out the task in a similar way to each other. This can help ensure that the ensemble of labeled completions will be representative of a consensus point of view.
+
+Once your human labelers have completed their assessments off the Prom completion sets, you have all the data you need to train the reward model. Which you will use instead of humans to classify model completions during the reinforcement learning finetuning process. Before you start to train the reward model, however, you need to convert the ranking data into a pairwise comparison of completions. 
+
+In other words, all possible pairs of completions from the available choices to a prompt should be classified as 0 or 1 score. 
+
+In the example shown here, there are three completions to a prompt, and the ranking assigned by the human labelers was 2, 1, 3, as shown, where 1 is the highest rank corresponding to the most preferred response. With the three different completions, there are three possible pairs purple-yellow, purple-green and yellow-green. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/a01ec647-a67d-4fde-a14a-8e16250bbc37)
+
+Depending on the number N of alternative completions per prompt, you will have N choose two combinations. For each pair, you will assign a reward of 1 for the preferred response and a reward of 0 for the less preferred response. Then you'll reorder the prompts so that the preferred option comes first. This is an important step because the reward model expects the preferred completion, which is referred to as Yj first. 
+
+Once you have completed this data, restructuring, the human responses will be in the correct format for training the reward model. Note that while thumbs-up, thumbs-down feedback is often easier to gather than ranking feedback, ranked feedback gives you more prom completion data to train your reward model. As you can see, here you get three prompt completion pairs from each human ranking.
