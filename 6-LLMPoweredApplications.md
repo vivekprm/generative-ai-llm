@@ -210,3 +210,99 @@ It's important to note that prompts and completions are at the very heart of the
 Structuring the prompts in the correct way is important for all of these tasks and can make a huge difference in the quality of a plan generated or the adherence to a desired output format specification.
 
 # Helping LLMs reason and plan with chain-of-thought
+As you saw, it is important that LLMs can reason through the steps that an application must take, to satisfy a user request. Unfortunately, complex reasoning can be challenging for LLMs, especially for problems that involve multiple steps or mathematics. These problems exist even in large models that show good performance at many other tasks. 
+
+Here's one example where an LLM has difficulty completing the task. You're asking the model to solve a simple multi-step math problem, to determine how many apples a cafeteria has after using some to make lunch, and then buying some more. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/897318e5-3f1c-4152-9a3a-498c1c84ea7b)
+
+Your prompt includes a similar example problem, complete with the solution, to help the model understand the task through one-shot inference. If you like, you can pause the video here for a moment and solve the problem yourself. After processing the prompt, the model generates the completion shown here, stating that the answer is 27. This answer is incorrect, as you found out if you solve the problem. The cafeteria actually only has nine apples remaining. **Researchers have been exploring ways to improve the performance of large language models on reasoning tasks**, like the one you just saw.
+
+One strategy that has demonstrated some success is prompting the model to think more like a human, by breaking the problem down into steps. What do I mean by thinking more like a human? Well, here is the one-shot example problem from the prompt on the previous slide. 
+
+The task here is to calculate how many tennis balls Roger has after buying some new ones. One way that a human might tackle this problem is as follows. 
+- Begin by determining the number of tennis balls Roger has at the start.
+- Then note that Roger buys two cans of tennis balls. Each can contains three balls, so he has a total of six new tennis balls.
+- Next, add these 6 new balls to the original 5, for a total of 11 balls.
+- Then finish by stating the answer.
+
+These intermediate calculations form the reasoning steps that a human might take, and the full sequence of steps illustrates the chain of thought that went into solving the problem. Asking the model to mimic this behavior is known as chain of thought prompting. It works by including a series of intermediate reasoning steps into any examples that you use for one or few-shot inference. 
+
+By structuring the examples in this way, you're essentially teaching the model how to reason through the task to reach a solution. Here's the same apples problem you saw a couple of slides ago, now reworked as a chain of thought prompt. The story of Roger buying the tennis balls is still used as the one-shot example. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/7f3d01c4-04bd-43bf-a91f-7a3fbb849e16)
+
+But this time you include intermediate reasoning steps in the solution text. These steps are basically equivalent to the ones a human might take, that you saw just a few minutes ago. You then send this chain of thought prompt to the large language model, which generates a completion. 
+
+Notice that the model has now produced a more robust and transparent response that explains its reasoning steps, following a similar structure as the one-shot example. The model now correctly determines that nine apples are left. Thinking through the problem has helped the model come to the correct answer. One thing to note is that while the input prompt is shown here in a condensed format to save space, the entire prompt is actually included in the output. 
+
+You can use chain of thought prompting to help LLMs improve their reasoning of other types of problems too, in addition to arithmetic. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/27cd782b-3174-4fe0-8086-39f32ca9a3a8)
+
+Here's an example of a simple physics problem, where the model is being asked to determine if a gold ring would sink to the bottom of a swimming pool. The chain of thought prompt included as the one-shot example here, shows the model how to work through this problem, by reasoning that a pair would flow because it's less dense than water. When you pass this prompt to the LLM, it generates a similarly structured completion. The model correctly identifies the density of gold, which it learned from its training data, and then reasons that the ring would sink because gold is much more dense than water.
+
+Chain of thought prompting is a powerful technique that improves the ability of your model to reason through problems. While this can greatly improve the performance of your model, the limited math skills of LLMs can still cause problems if your task requires accurate calculations, like totaling sales on an e-commerce site, calculating tax, or applying a discount.
+
+# Program-aided language models (PAL)
+the ability of LLMs to carry out arithmetic and other mathematical operations is limited. While you can try using chain of thought prompting to overcome this, it will only get you so far. Even if the model correctly reasons through a problem, it may still get the individual math operations wrong, especially with larger numbers or complex operations. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/2ad46e50-4eac-4baf-9bf4-156f0a18f5c3)
+
+Here's the example you saw earlier where the LLM tries to act like a calculator but gets the answer wrong. 
+
+Remember, the model isn't actually doing any real math here. **It is simply trying to predict the most probable tokens that complete the prompt**. The model getting math wrong can have many negative consequences depending on your use case, like charging customers the wrong total or getting the measurements for a recipe incorrect. 
+
+You can overcome this limitation by **allowing your model to interact with external applications that are good at math, like a Python interpreter**. One interesting framework for augmenting LLMs in this way is called **program-aided language models**, or PAL for short. 
+
+This work first presented by Luyu Gao and collaborators at Carnegie Mellon University in 2022, pairs an LLM with an external code interpreter to carry out calculations. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/56e01862-a6db-470b-91ca-c3b92213889a)
+
+The method makes use of chain of thought prompting to generate executable Python scripts. The scripts that the model generates are passed to an interpreter to execute. The image on the right here is taken from the paper and show some example prompts and completions. 
+
+The strategy behind PAL is to have the LLM generate completions where reasoning steps are accompanied by computer code. This code is then passed to an interpreter to carry out the calculations necessary to solve the problem. You specify the output format for the model by including examples for one or few shot inference in the prompt. 
+
+Let's take a closer look at how these example prompts are structured. You'll continue to work with the story of Roger buying tennis balls as the one-shot example. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/ec03fbe3-17c6-48dd-8f68-c7df678f3c0d)
+
+The setup here should now look familiar. This is a chain of thought example. You can see the reasoning steps written out in words on the lines highlighted in blue. What differs from the prompts you saw before is the inclusion of lines of Python code shown in pink. These lines translate any reasoning steps that involve calculations into code. Variables are declared based on the text in each reasoning step. Their values are assigned either directly, as in the first line of code here, or as calculations using numbers present in the reasoning text as you see in the second Python line. The model can also work with variables it creates in other steps, as you see in the third line. 
+
+Note that the text of each reasoning step begins with a pound sign, so that the line can be skipped as a comment by the Python interpreter. The prompt here ends with the new problem to be solved. In this case, the objective is to determine how many loaves of bread a bakery has left after a day of sales and after some loaves are returned from a grocery store partner. 
+
+On the right, you can see the completion generated by the LLM. Again, the chain of thought reasoning steps are shown in blue and the Python code is shown in pink. As you can see, the model creates a number of variables to track the loaves baked, the loaves sold in each part of the day, and the loaves returned by the grocery store. The answer is then calculated by carrying out arithmetic operations on these variables. The model correctly identifies whether terms should be added or subtracted to reach the correct total. 
+
+Now that you know how to structure examples that will tell the LLM to write Python scripts based on its reasoning steps, let's go over how the PAL framework enables an LLM to interact with an external interpreter. 
+
+To prepare for inference with PAL, you'll format your prompt to contain one or more examples. Each example should contain a question followed by reasoning steps in lines of Python code that solve the problem. Next, you will append the new question that you'd like to answer to the prompt template. Your resulting PAL formatted prompt now contains both the example and the problem to solve. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/09cce2ac-0adf-4a0d-9d26-01c09031651a)
+
+Next, you'll pass this combined prompt to your LLM, which then generates a completion that is in the form of a Python script having learned how to format the output based on the example in the prompt. You can now hand off the script to a Python interpreter, which you'll use to run the code and generate an answer. 
+
+For the bakery example script you saw on the previous slide, the answer is 74. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/b1d7f5aa-1359-4a1d-8182-8f13191cbe8a)
+
+You'll now append the text containing the answer, which you know is accurate because the calculation was carried out in Python to the PAL formatted prompt you started with. By this point you have a prompt that includes the correct answer in context. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/0ae67020-f202-4d80-a25a-331a8307f781)
+
+Now when you pass the updated prompt to the LLM, it generates a completion that contains the correct answer. 
+
+Given the relatively simple math in the bakery bread problem, it's likely that the model may have gotten the answer correct just with chain of thought prompting. But for more complex math, including arithmetic with large numbers, trigonometry or calculus, PAL is a powerful technique that allows you to ensure that any calculations done by your application are accurate and reliable. 
+
+You might be wondering how to automate this process so that you don't have to pass information back and forth between the LLM, and the interpreter by hand. This is where the **orchestrator** that you saw earlier comes in. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/5d1bf2e5-0c34-441f-87e8-8de400686066)
+
+The orchestrator shown here as the yellow box is a technical component that can manage the flow of information and the initiation of calls to external data sources or applications. It can also decide what actions to take based on the information contained in the output of the LLM.
+
+Remember, the LLM is your application's reasoning engine. Ultimately, it creates the plan that the orchestrator will interpret and execute. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/b4f84c96-ca44-405b-b2e8-af19334e80c4)
+
+In PAL there's only one action to be carried out, the execution of Python code. The LLM doesn't really have to decide to run the code, it just has to write the script which the orchestrator then passes to the external interpreter to run. However, most real-world applications are likely to be more complicated than the simple PAL architecture. Your use case may require interactions with several external data sources. As you saw in the shop bot example, you may need to manage multiple decision points, validation actions, and calls to external applications.
+
+# ReAct: Combining reasoning and action
