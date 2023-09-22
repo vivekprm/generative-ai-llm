@@ -413,3 +413,8 @@ The second part of the process performs reinforcement learning. This stage is si
 Here you use the fine-tuned model from the previous step to generate a set of responses to your prompt. You then ask the model which of the responses is preferred according to the constitutional principles. The result is a model generated preference dataset that you can use to train a reward model. With this reward model, you can now fine-tune your model further using a reinforcement learning algorithm like PPO, as discussed earlier. 
 
 Aligning models is a very important topic and an active area of research. The foundations of RLHF that you've explored in this lesson will allow you to follow along as the field evolves. I'm really excited to see what new discoveries researchers make in this area.
+
+# Lab 3
+```sh
+aws s3 cp --recursive s3://dlai-generative-ai/labs/w3-233794/ ./
+```
