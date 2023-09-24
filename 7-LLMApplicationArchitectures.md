@@ -30,3 +30,21 @@ In practice, RLHF is a very effective mechanism that you can use to improve the 
 
 Lastly, we explored ways that we can help our model perform better in deployment through structured prompts and connections to external data sources and applications. LLMs can play an amazing role as the reasoning engine in an application, exploiting their intelligence to power exciting, useful applications. Frameworks like LangChain are making it possible to quickly build, deploy, and test LLM powered applications, and it's a very exciting time for developers. 
 
+# Amazon Sagemaker JumpStart
+Amazon Sagemaker JumpStart, can help us get into production quickly and operate at scale.
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/8e846c92-d203-4471-95c1-d4626c904e0c)
+
+Here's the application stack that we explored previously. As we saw, building an LLM-powered application requires multiple components. 
+
+Sagemaker JumpStart is a model hub, and it allows you to quickly deploy foundation models that are available within the service, and integrate them into your own applications. The JumpStart service also provides an easy way to fine-tune and deploy models. JumpStart covers many parts of this diagram, including the infrastructure, the LLM itself, the tools and frameworks, and even an API to invoke the model. 
+
+In contrast to the models that we worked with in the labs, JumpStart models require GPUs to fine tune and deploy. And keep in mind, these GPUs are subject to on-demand pricing and you should refer to the Sagemaker pricing page before selecting the compute you want to use. Also, please be sure to delete the Sagemaker model endpoints when not in use and follow cost monitoring best practices to optimize cost. 
+
+Sagemaker JumpStart is accessible from the AWS console, or through Sagemaker studio. For this brief tour, I'll start in studio then choose JumpStart from the main screen. I could optionally choose JumpStart from the left-hand menu, and select models, notebooks, and solutions as well. After I click on "JumpStart", you'll see different categories that include end-to-end solutions across different use cases, as well as a number of foundation models for different modalities that you can easily deploy, as well as fine-tune, where yes is indicated under the fine-tuning option. 
+
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/1c806aa0-eaf6-4ef6-bce7-c0ba00bf61c3)
+
+Let's look at an example we're all familiar with after working through the course, which is the Flan-T5 model. We've specifically been using the base variant in the course to minimize the resources needed by the lab environments. 
+
+However, as you can see here, you can also utilize other variants of Flan-T5 through JumpStart depending on your needs. You'll also notice the Hugging Face logo here, which means they're actually coming directly from Hugging Face. And AWS has worked with Hugging Face to the point where you can easily, with just a few clicks, deploy, or fine-tune the model. 
