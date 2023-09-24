@@ -312,13 +312,13 @@ We'll explore a framework called **ReAct** that can help LLMs plan out and execu
 
 The framework was proposed by researchers at Princeton and Google in 2022. The paper develops a series of complex prompting examples based on problems from Hot Pot QA, a multi-step question answering benchmark. That requires reasoning over two or more Wikipedia passages and fever, a benchmark that uses Wikipedia passages to verify facts. 
 
-![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/c6bce2a4-ca7e-4721-b32a-5d2d6ab57d07)
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/f6c0bfc5-4309-43a8-9a06-34d9055e2759)
 
 The figure on the right shows some example prompts from the paper, and we'll explore one shortly. 
 
 ReAct uses structured examples to show a large language model how to reason through a problem and decide on actions to take that move it closer to a solution. The example prompts start with a question that will require multiple steps to answer. 
 
-![Uploading image.png…]()
+![image](https://github.com/vivekprm/generative-ai-llm/assets/2403660/c6bce2a4-ca7e-4721-b32a-5d2d6ab57d07)
 
 In this example, the goal is to determine which of two magazines was created first. The example then includes a related thought action observation trio of strings. The thought is a reasoning step that demonstrates to the model how to tackle the problem and identify an action to take. 
 
