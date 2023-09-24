@@ -306,3 +306,20 @@ Remember, the LLM is your application's reasoning engine. Ultimately, it creates
 In PAL there's only one action to be carried out, the execution of Python code. The LLM doesn't really have to decide to run the code, it just has to write the script which the orchestrator then passes to the external interpreter to run. However, most real-world applications are likely to be more complicated than the simple PAL architecture. Your use case may require interactions with several external data sources. As you saw in the shop bot example, you may need to manage multiple decision points, validation actions, and calls to external applications.
 
 # ReAct: Combining reasoning and action
+An application making use of PAL can link the LLM to a Python interpreter to run the code and return the answer to the LLM. Most applications will require the LLM to manage more complex workflows, perhaps in including interactions with multiple external data sources and applications. 
+
+We'll explore a framework called **ReAct** that can help LLMs plan out and execute these workflows. **ReAct is a prompting strategy that combines chain of thought reasoning with action planning**. 
+
+The framework was proposed by researchers at Princeton and Google in 2022. The paper develops a series of complex prompting examples based on problems from Hot Pot QA, a multi-step question answering benchmark. That requires reasoning over two or more Wikipedia passages and fever, a benchmark that uses Wikipedia passages to verify facts. 
+
+![Uploading image.png…]()
+
+The figure on the right shows some example prompts from the paper, and we'll explore one shortly. 
+
+ReAct uses structured examples to show a large language model how to reason through a problem and decide on actions to take that move it closer to a solution. The example prompts start with a question that will require multiple steps to answer. 
+
+![Uploading image.png…]()
+
+In this example, the goal is to determine which of two magazines was created first. The example then includes a related thought action observation trio of strings. The thought is a reasoning step that demonstrates to the model how to tackle the problem and identify an action to take. 
+
+In the newspaper publishing example, the prompt specifies that the model will search for both magazines and determine which one was published first. In order for the model to interact with an external application or data source, it has to identify an action to take from a pre-determined list. In the case of the ReAct framework, the authors created a small Python API to interact with Wikipedia. The three allowed actions are search, which looks for a Wikipedia entry about a particular topic lookup, which searches for a string on a Wikipedia page. And finish, which the model carries out when it decides it has determined the answer. As you saw on the previous slide, the thought in the prompt identified two searches to carry out one for each magazine. In this example, the first search will be for Arthur's magazine. The action is formatted using the specific square bracket notation you see here, so that the model will format its completions in the same way. The Python interpreter searches for this code to trigger specific API actions. The last part of the prompt template is the observation, this is where the new information provided by the external search is brought into the context of the prompt. For the model to interpret the prompt then repeats the cycle as many times as is necessary to obtain the final answer. In the second thought, the prompt states the start year of Arthur's magazine and identifies the next step needed to solve the problem. The second action is to search for first for women, and the second observation includes text that states the start date of the publication, in this case 1989.
