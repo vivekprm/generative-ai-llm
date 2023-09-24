@@ -48,3 +48,5 @@ Sagemaker JumpStart is accessible from the AWS console, or through Sagemaker stu
 Let's look at an example we're all familiar with after working through the course, which is the Flan-T5 model. We've specifically been using the base variant in the course to minimize the resources needed by the lab environments. 
 
 However, as you can see here, you can also utilize other variants of Flan-T5 through JumpStart depending on your needs. You'll also notice the Hugging Face logo here, which means they're actually coming directly from Hugging Face. And AWS has worked with Hugging Face to the point where you can easily, with just a few clicks, deploy, or fine-tune the model. 
+
+In addition to acting as a model hub that includes foundation models, JumpStart also provides a lot of resources in terms of blogs, videos, and example notebooks as well.
