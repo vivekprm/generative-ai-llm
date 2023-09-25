@@ -71,3 +71,41 @@ In addition to acting as a model hub that includes foundation models, JumpStart 
 # LLM powered application architectures
 - [LangChain Library (GitHub)](https://github.com/hwchase17/langchain) - This library is aimed at assisting in the development of those types of applications, such as Question Answering, Chatbots and other Agents. You can read the documentation [here](https://docs.langchain.com/docs/).
 - [Who Owns the Generative AI Platform?](https://a16z.com/2023/01/19/who-owns-the-generative-ai-platform/) - The article examines the market dynamics and business models of generative AI.
+
+# Active Areas of Research
+With the growth of AI comes the recognition that we must all use it responsibly. What are some of the new risks and challenges of responsible AI, specifically in the context of generative AI with large language models?
+
+That's a great question because there are lots of challenges. Let's focus on three. 
+- One is toxicity
+- Another are the hallucinations
+- And a third is the intellectual property issue.
+
+Toxicity at its core, meaning toxic, implies certain language or content that can be harmful or discriminatory towards certain groups, especially towards marginalized groups or protected groups. And so one thing that we can do is start with the training data. As you know, that is the basis of every AI. So you can start with curating the training data. You can also train guardrail models to detect and filter out any unwanted content in the training data. We also think about how much human annotation is involved when it comes to training data and training annotations. We want to make sure we provide enough guidance to those annotators and also have a very diverse group of annotators that we're educating so that they can understand how to pull out certain data or how to mark certain data.
+
+Hallucinations, we think about things that are simply not true, or maybe something that seems like it could be true, but it isn't. It has no basis to it. Well, this is exactly what it means in this case with generative AI, due to the nature of how we train large language models or just neural networks in general. A lot of times we don't know what the model is actually learning and so sometimes what the model will try to do is fill gaps where it has missing data. And oftentimes this leads to false statements or the hallucinations. 
+
+And so one thing that we can do, we can educate the users that this is the reality of this technology and add any disclaimer so they can know that this is something you should be able to look out for. Also, you can augment large language models with independent and verified sources so you can double check against the data that you're getting back. You also want to make sure that you develop methods for attributing generated output to particular pieces of training data so that we can always trace back to where we got the information. And last but not least, we always want to make sure we define what the intended use case is for versus what the unintended use case is.
+
+Intellectual property basically means where people are using data that is returned back from these models in terms of AI. And it can be plagiarizing someone's previous work, or you can have copyright issues for pieces of work and content that already exists. 
+
+And so this is likely to be addressed over time by a mixture of not just the technologies, but also with policymakers and other legal mechanisms. 
+Also, we want to incorporate a system of governance to make sure that every stakeholder is doing what they need to do to prevent this from happening in the near term. There's a new concept of machine unlearning in which protected content or its effects on generative AI outputs are reduced or removed. 
+
+So this is just one approach that is very primitive in research today. We can also do filtering or blocking approaches that compare generated content to protected content and training data and suppress or replace it if it's too similar before presenting it to the user. 
+
+How can I responsibly, build and use generative AI models? 
+Defining use cases is very important. The more specific, the more narrow the better. 
+One example where we actually use gentive AI to test and evaluate the robustness of a system is when it comes to face ID systems. We actually use journeys of AI to create different versions of a face. For example, if I'm trying to test a system that uses my face to unlock my phone, I want to make sure I test it with different versions of my face, with long hair, with short hair, with glasses on, with makeup on, with no makeup on. And we can use gentle AI to do this at scale. And so this is an example of how we use that to test the robustness. 
+
+Also, we want to make sure we access the risk because each use case has its own set of risks. Some may be better or worse. 
+
+Also, evaluating the performance is truly a function of the data and the system. You may have the same system, but when tested with different types of data, may perform very well or may perform very terribly. 
+
+Also, we want to make sure we iterate over the AI lifecycle. It's never a one and done. Creating AI is a continuous Iterative cycle where we want to implement responsibility at the concept stage as well as the deployment stage and monitoring that feedback over time. 
+
+And last but not least, we want to issue governance policies throughout the lifecycle and accountability measures for every stakeholder involved. 
+
+What are some of the topics that the research community is actively working on right now that you find exciting?
+There are lots, which is why, again, this field is unraveling every day. 
+- There's water marking and fingerprinting which are ways to include almost like a stamp or a signature in a piece of content or data so that we can always trace back. - I think also creating models that help determine if content was created with generative AI is also a budding field of research.
+
